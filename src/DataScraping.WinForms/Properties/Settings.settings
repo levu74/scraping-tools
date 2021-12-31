@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DataScraping.WinForms.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Pages" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">20</Value>
+    </Setting>
+    <Setting Name="Delay" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="EmailPattern" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\b[\w\.-]+@((\w*\.)?gov\.vn|\w*\.edu\.vn|gmail\,com)\b</Value>
+    </Setting>
+    <Setting Name="DownloadLink" Type="System.String" Scope="User">
+      <Value Profile="(Default)">(?is)(?:href\s*=\s*["']\s*(?&lt;link&gt;([\w%/:_\.]+?)\.(pdf|docx?|xlsx?))["'])</Value>
+    </Setting>
+    <Setting Name="MaxLinksPerPage" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="TimeoutSeconds" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="ExternalCrawlingEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="NotContainsUrlWords" Type="System.String" Scope="User">
+      <Value Profile="(Default)">iis;google;microsoft</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
