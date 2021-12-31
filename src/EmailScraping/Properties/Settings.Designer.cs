@@ -25,7 +25,7 @@ namespace EmailScraping.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
         public int Pages {
             get {
                 return ((int)(this["Pages"]));
@@ -49,7 +49,7 @@ namespace EmailScraping.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\b[\\w\\.-]+@((\\w*\\.)?gov\\.vn|\\w*\\.edu\\.vn|gmail\\,com)\\b")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\b[\\w\\.-]+@((\\w*\\.)?gov\\.vn|\\w*\\.edu\\.vn|gmail\\.com|yahoo\\.com(\\.vn)?)\\b")]
         public string EmailPattern {
             get {
                 return ((string)(this["EmailPattern"]));
@@ -116,6 +116,18 @@ namespace EmailScraping.Properties {
             }
             set {
                 this["NotContainsUrlWords"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowLink {
+            get {
+                return ((bool)(this["ShowLink"]));
+            }
+            set {
+                this["ShowLink"] = value;
             }
         }
     }

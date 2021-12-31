@@ -3,13 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="Pages" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">20</Value>
+      <Value Profile="(Default)">100</Value>
     </Setting>
     <Setting Name="Delay" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">100</Value>
     </Setting>
     <Setting Name="EmailPattern" Type="System.String" Scope="User">
-      <Value Profile="(Default)">\b[\w\.-]+@((\w*\.)?gov\.vn|\w*\.edu\.vn|gmail\,com)\b</Value>
+      <Value Profile="(Default)">\b[\w\.-]+@((\w*\.)?gov\.vn|\w*\.edu\.vn|gmail\.com|yahoo\.com(\.vn)?)\b</Value>
     </Setting>
     <Setting Name="DownloadLink" Type="System.String" Scope="User">
       <Value Profile="(Default)">(?is)(?:href\s*=\s*["']\s*(?&lt;link&gt;([\w%/:_\.]+?)\.(pdf|docx?|xlsx?))["'])</Value>
@@ -25,6 +25,9 @@
     </Setting>
     <Setting Name="NotContainsUrlWords" Type="System.String" Scope="User">
       <Value Profile="(Default)">iis;google;microsoft</Value>
+    </Setting>
+    <Setting Name="ShowLink" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

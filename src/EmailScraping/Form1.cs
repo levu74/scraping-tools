@@ -75,10 +75,15 @@ namespace EmailScraping
             var list = new List<string>();
             foreach (Match match in emailRegex.Matches(html))
             {
-                list.Add($"{match.Value}|{url}");
+                list.Add(CombineString(match.Value, url));
             }
 
             return list;
+        }
+
+        private static string CombineString(string match, string url)
+        {
+            return string.IsNullOrEmpty(url) ? match : $"{match}|{url}";
         }
 
         private List<string> ExtractDownloadLink(string html, string url = "")
@@ -86,7 +91,7 @@ namespace EmailScraping
             var list = new List<string>();
             foreach (Group match in downloadLink.Matches(html).OfType<Match>().Select(m => m.Groups["link"]))
             {
-                list.Add($"{match.Value}|{url}");
+                list.Add(CombineString(match.Value, url));
             }
 
             return list;
@@ -133,8 +138,8 @@ namespace EmailScraping
         private void PageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
         {
             string visitUrl = e.CrawledPage.Uri.ToString();
-            var emailList = ExtractEmail(e.CrawledPage.Content.Text, visitUrl);
-            var downloadLinkList = ExtractDownloadLink(e.CrawledPage.Content.Text, visitUrl).Distinct().Select(x =>
+            var emailList = ExtractEmail(e.CrawledPage.Content.Text, Settings.Default.ShowLink ? visitUrl : String.Empty);
+            var downloadLinkList = ExtractDownloadLink(e.CrawledPage.Content.Text, Settings.Default.ShowLink ? visitUrl : String.Empty).Distinct().Select(x =>
             {
                 if (x.StartsWith("/"))
                 {
