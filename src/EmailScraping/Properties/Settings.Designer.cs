@@ -12,7 +12,7 @@ namespace EmailScraping.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.0.1.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.1.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -49,7 +49,7 @@ namespace EmailScraping.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\b[\\w\\.-]+@(tphcm\\.gov\\.vn|gdt\\.gov\\.vn|\\w*\\.edu\\.vn|gmail\\,com)\\b")]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\b[\\w\\.-]+@((\\w*\\.)?gov\\.vn|\\w*\\.edu\\.vn|gmail\\,com)\\b")]
         public string EmailPattern {
             get {
                 return ((string)(this["EmailPattern"]));
@@ -68,6 +68,54 @@ namespace EmailScraping.Properties {
             }
             set {
                 this["DownloadLink"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int MaxLinksPerPage {
+            get {
+                return ((int)(this["MaxLinksPerPage"]));
+            }
+            set {
+                this["MaxLinksPerPage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
+        public int TimeoutSeconds {
+            get {
+                return ((int)(this["TimeoutSeconds"]));
+            }
+            set {
+                this["TimeoutSeconds"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ExternalCrawlingEnabled {
+            get {
+                return ((bool)(this["ExternalCrawlingEnabled"]));
+            }
+            set {
+                this["ExternalCrawlingEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("iis;google;microsoft")]
+        public string NotContainsUrlWords {
+            get {
+                return ((string)(this["NotContainsUrlWords"]));
+            }
+            set {
+                this["NotContainsUrlWords"] = value;
             }
         }
     }

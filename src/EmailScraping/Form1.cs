@@ -27,8 +27,8 @@ namespace EmailScraping
         CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         Regex emailRegex = new Regex(Settings.Default.EmailPattern, RegexOptions.Compiled);
         Regex downloadLink = new Regex(Settings.Default.DownloadLink, RegexOptions.Compiled);
-        private List<string> emails = new List<string>();
-        private List<string> links = new List<string>();
+
+        private readonly CrawlingState crawlingState = new CrawlingState();
         public Form1()
         {
             InitializeComponent();
@@ -36,20 +36,20 @@ namespace EmailScraping
 
         private void Process_Click(object sender, EventArgs e)
         {
-            
+           
             if (this.btnProcess.Text == StartProcessText)
             {
+                crawlingState.Reset();
                 cancellationTokenSource = new CancellationTokenSource();
                 btnProcess.Text = "Stop";
                 txtEmail.Cursor = Cursors.WaitCursor;
                 txtLink.Cursor = Cursors.WaitCursor;
                 var websiteUrl = txtWebUrl.Text;
                 txtEmail.Clear();
-                emails = new List<string>();
-                links = new List<string>();
                 StartCrawler(websiteUrl, cancellationTokenSource).ObserveOn(SynchronizationContext.Current).Subscribe(result =>
                 {
-                    UpdateTextbox(emails, txtEmail, true);
+                    UpdateTextbox(crawlingState.Emails, txtEmail, true);
+                    List<string> links = crawlingState.DownloadLinks.Prepend("Download Links").Append("\r\nVisit Links").Concat(crawlingState.VisitedUrls).ToList();
                     UpdateTextbox(links, txtLink, true);
                     txtEmail.Cursor = Cursors.Default;
                     txtLink.Cursor = Cursors.Default;
@@ -61,8 +61,8 @@ namespace EmailScraping
             {
                 cancellationTokenSource.Cancel();
                 btnProcess.Text = StartProcessText;
-                UpdateTextbox(emails, txtEmail, true);
-                UpdateTextbox(links, txtLink, true);
+                UpdateTextbox(crawlingState.Emails, txtEmail, true);
+                UpdateTextbox(crawlingState.DownloadLinks, txtLink, true);
                 txtEmail.Cursor = Cursors.Default;
                 txtLink.Cursor = Cursors.Default;
             }
@@ -70,23 +70,23 @@ namespace EmailScraping
             
         }
 
-        private List<string> ExtractEmail(string html)
+        private List<string> ExtractEmail(string html, string url = "")
         {
             var list = new List<string>();
             foreach (Match match in emailRegex.Matches(html))
             {
-                list.Add(match.Value);
+                list.Add($"{match.Value}|{url}");
             }
 
             return list;
         }
 
-        private List<string> ExtractDownloadLink(string html)
+        private List<string> ExtractDownloadLink(string html, string url = "")
         {
             var list = new List<string>();
             foreach (Group match in downloadLink.Matches(html).OfType<Match>().Select(m => m.Groups["link"]))
             {
-                list.Add(match.Value);
+                list.Add($"{match.Value}|{url}");
             }
 
             return list;
@@ -97,19 +97,44 @@ namespace EmailScraping
             var config = new CrawlConfiguration
             {
                 MaxPagesToCrawl = Settings.Default.Pages, //Only crawl 10 pages
-                MinCrawlDelayPerDomainMilliSeconds = Settings.Default.Delay //Wait this many millisecs between requests
+                MinCrawlDelayPerDomainMilliSeconds = Settings.Default.Delay, //Wait this many millisecs between requests
+                MaxLinksPerPage = Settings.Default.MaxLinksPerPage,
+                CrawlTimeoutSeconds = Settings.Default.TimeoutSeconds,
+                IsExternalPageLinksCrawlingEnabled = Settings.Default.ExternalCrawlingEnabled,
+                IsExternalPageCrawlingEnabled = Settings.Default.ExternalCrawlingEnabled,
+                
+                
             };
             var crawler = new PoliteWebCrawler(config);
-            
+            crawler.ShouldCrawlPageDecisionMaker = ShouldCrawlPageDecisionMaker;
             crawler.PageCrawlCompleted += PageCrawlCompleted;//Several events available...
 
              return crawler.CrawlAsync(new Uri(url), source).ToObservable();
         }
 
+        private CrawlDecision ShouldCrawlPageDecisionMaker(PageToCrawl page, CrawlContext context)
+        {
+            CrawlDecision decision = new CrawlDecision();
+            var notAllowWords = Settings.Default.NotContainsUrlWords.Split(';');
+            var currentUrl = page.Uri.AbsoluteUri.ToLower();
+            if (notAllowWords.Any(word => currentUrl.IndexOf(word) >= 0))
+            {
+                decision.Allow = false;
+            }
+            else
+            {
+                decision.Allow = true;
+            }
+
+            return decision;
+           
+        }
+
         private void PageCrawlCompleted(object sender, PageCrawlCompletedArgs e)
         {
-            var emailList = ExtractEmail(e.CrawledPage.Content.Text);
-            var downloadLinkList = ExtractDownloadLink(e.CrawledPage.Content.Text).Distinct().Select(x =>
+            string visitUrl = e.CrawledPage.Uri.ToString();
+            var emailList = ExtractEmail(e.CrawledPage.Content.Text, visitUrl);
+            var downloadLinkList = ExtractDownloadLink(e.CrawledPage.Content.Text, visitUrl).Distinct().Select(x =>
             {
                 if (x.StartsWith("/"))
                 {
@@ -117,13 +142,15 @@ namespace EmailScraping
                 }
                 return x;
             }).ToList();
-            emails.AddRange(emailList);
-            links.AddRange(downloadLinkList);
+            crawlingState.Emails.AddRange(emailList);
+            crawlingState.DownloadLinks.AddRange(downloadLinkList);
             if (InvokeRequired)
             {
                 Invoke(new MethodInvoker(() =>
                 {
-                    toolStripStatusLabel1.Text = e.CrawledPage.Uri.ToString();
+                   
+                    crawlingState.VisitedUrls.Add(visitUrl);
+                    toolStripStatusLabel1.Text = visitUrl;
                     var textbox = txtEmail;
                     UpdateTextbox(emailList, txtEmail);
                     UpdateTextbox(downloadLinkList, txtLink);
