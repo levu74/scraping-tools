@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="EmailScraping.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Pages" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">20</Value>
+    </Setting>
+    <Setting Name="Delay" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="EmailPattern" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\b[\w\.-]+@(tphcm\.gov\.vn|gdt\.gov\.vn|\w*\.edu\.vn|gmail\,com)\b</Value>
+    </Setting>
+    <Setting Name="DownloadLink" Type="System.String" Scope="User">
+      <Value Profile="(Default)">(?is)(?:href\s*=\s*["']\s*(?&lt;link&gt;([\w%/:_\.]+?)\.(pdf|docx?|xlsx?))["'])</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
